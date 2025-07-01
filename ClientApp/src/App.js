@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './style.css';
 
 function App() {
     const [tarantulas, setTarantulas] = useState([]);
@@ -15,6 +16,7 @@ function App() {
             .then(res => res.json())
             .then(data => setTarantulas(data));
     }
+
   useEffect(() => {
       LoadTarantulas();
   }, []);
@@ -65,38 +67,63 @@ function App() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>Lista Ptaszników</h1>
-      <ul>
-        {tarantulas.map(t => (
-            <li key={t.id}>
-                {editId == t.id ? (
-                    <>
-                        <input
+          <h1>Lista Ptaszników</h1>
+      <table id="TarantulaList">
+              <thead>
+              <tr>
+                  <th>Lp.</th>
+                  <th>Imię</th>
+                  <th>Gatunek</th>
+                  <th>Silnie jadowity</th>
+                      <th>Opcje</th>
+              </tr>
+              </thead>
+              <tbody>
+                  {tarantulas.map((t, index) => (
+
+                   <tr key={t.id}>
+                        {editId == t.id ? (
+                        <>
+                        <td>{index + 1}</td>
+                        <td><input
                             type="text"
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
-                        />
+                                  />
+                        </td>
+                        <td>
                         <input
                             type="text"
                             value={editSpecies}
                             onChange={(e) => setEditSpecies(e.target.value)}
-                        />
+                                      />
+                        </td>
+                        <td>
                         <input
                             type="checkbox"
                             checked={editVenomStrength}
                             onChange={(e) => setEditVenomStrength(e.target.checked)}
-                        />
-                        <button onClick={SaveEdit} style={{ marginLeft: '10px' }}>Zapisz</button>
-                        <button onClick={() => setEditId(null)} style={{ marginLeft: '5px' }}>Anuluj</button>
+                                      />
+                        </td>
+                        <td>
+                            <button onClick={SaveEdit} style={{ marginLeft: '10px' }}>Zapisz</button>
+                            <button onClick={() => setEditId(null)} style={{ marginLeft: '5px' }}>Anuluj</button>
+                        </td>
                     </>) : (
                     <>
-                    Imie: {t.name}  Gatunek: {t.species}  Silny jad: {t.hasStrongVenom ? 'Tak' : 'Nie' }
-                        <button onClick={() => StartEdit(t)} style={{ marginLeft: '10px' }}>Edytuj</button>
-                        <button onClick={() => DeleteTarantula(t.id)} style={{ marginLeft: '5px' }}>Usuń</button>
+                        <td>{index + 1}</td>
+                        <td>{t.name}</td>
+                        <td>{t.species}</td>
+                        <td>{t.hasStrongVenom ? 'Tak' : 'Nie'}</td>
+                        <td>
+                            <button onClick={() => StartEdit(t)} style={{ marginLeft: '10px' }}>Edytuj</button>
+                            <button class="delete-button" onClick={() => DeleteTarantula(t.id)} style={{ marginLeft: '5px' }}>Usuń</button>
+                        </td>
                     </>)}
-            </li>
+            </tr>
         ))}
-      </ul>
+              </tbody>
+      </table>
       <form onSubmit={AddTarantula}>
         Imie: <input type="text" placeholder="Name" value={newName} onChange={(t) => setNewName(t.target.value)} />
         Gatunek: <input type="text" placeholder="Species" value={newSpecies} onChange={(t) => setNewSpecies(t.target.value)} />

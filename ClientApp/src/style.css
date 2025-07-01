@@ -1,0 +1,35 @@
+﻿#TarantulaList{
+    width: 35%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 1%;
+    table-layout: fixed;
+}
+
+#TarantulaList, td, th{
+    font-size: 14px;
+    border-top: 1px solid #122242;
+    padding: 5px 12px;
+    text-align: center;
+    vertical-align: central;
+}
+
+thead > tr{
+    background-color: #2974e9;
+}
+
+tr {
+    background-color: #88d8d3;
+    border-left: 1px solid #122242;
+    border-right: 1px solid #122242;
+    border-bottom: 1px solid #122242;
+}
+
+tbody > tr:hover{
+    background-color: #4fc4d9;
+}
+
+.delete-button:hover{
+    background-color: #cf6565;
+    transition-duration: 1s;
+}
