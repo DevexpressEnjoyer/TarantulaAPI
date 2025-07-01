@@ -5,6 +5,10 @@ function App() {
     const [newName, setNewName] = useState('');
     const [newSpecies, setNewSpecies] = useState('');
     const [newVenomStrength, setNewVenomStrength] = useState(false);
+    const [editId, setEditId] = useState(null);
+    const [editName, setEditName] = useState('');
+    const [editSpecies, setEditSpecies] = useState('');
+    const [editVenomStrength, setEditVenomStrength] = useState(false);
 
     function LoadTarantulas() {
         fetch('/api/tarantulas')
@@ -31,6 +35,25 @@ function App() {
           })
     }
 
+    function StartEdit(t) {
+        setEditId(t.id);
+        setEditName(t.name);
+        setEditSpecies(t.species);
+        setEditVenomStrength(t.hasStrongVenom);
+    }
+
+    function SaveEdit() {
+        fetch(`/api/tarantulas/${editId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: editId, name: editName, species: editSpecies, hasStrongVenom: editVenomStrength })
+        })
+            .then(() => {
+                setEditId(null);
+                LoadTarantulas();
+            })
+    }
+
     function DeleteTarantula(id) {
         fetch(`/api/tarantulas/${id}`, {
             method: 'DELETE'
@@ -45,11 +68,33 @@ function App() {
       <h1>Lista Ptaszników</h1>
       <ul>
         {tarantulas.map(t => (
-          <li key={t.id}>
-            {t.name} ({t.species})
-            <button style={{ marginLeft: '10px' }}>Edytuj</button>
-            <button style={{ marginLeft: '5px' }} onClick={() => DeleteTarantula(t.id)}>Usuń</button>
-          </li>
+            <li key={t.id}>
+                {editId == t.id ? (
+                    <>
+                        <input
+                            type="text"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                        />
+                        <input
+                            type="text"
+                            value={editSpecies}
+                            onChange={(e) => setEditSpecies(e.target.value)}
+                        />
+                        <input
+                            type="checkbox"
+                            checked={editVenomStrength}
+                            onChange={(e) => setEditVenomStrength(e.target.checked)}
+                        />
+                        <button onClick={SaveEdit} style={{ marginLeft: '10px' }}>Zapisz</button>
+                        <button onClick={() => setEditId(null)} style={{ marginLeft: '5px' }}>Anuluj</button>
+                    </>) : (
+                    <>
+                    Imie: {t.name}  Gatunek: {t.species}  Silny jad: {t.hasStrongVenom ? 'Tak' : 'Nie' }
+                        <button onClick={() => StartEdit(t)} style={{ marginLeft: '10px' }}>Edytuj</button>
+                        <button onClick={() => DeleteTarantula(t.id)} style={{ marginLeft: '5px' }}>Usuń</button>
+                    </>)}
+            </li>
         ))}
       </ul>
       <form onSubmit={AddTarantula}>

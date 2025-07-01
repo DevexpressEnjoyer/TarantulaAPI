@@ -41,9 +41,15 @@ namespace TarantulaAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTarantula(int id, Tarantula tarantula)
         {
-            if (id != tarantula.Id) return BadRequest();
+            if (id != tarantula.Id) return BadRequest("Id in URL and request body are different.");
 
-            _context.Entry(tarantula).State = EntityState.Modified;
+            var existing = await _context.Tarantulas.FindAsync(id);
+            if(existing is null) return NotFound($"Tarantula with id {id} does not exist in the database.");
+
+            existing.Name = tarantula.Name;
+            existing.Species = tarantula.Species;
+            existing.HasStrongVenom = tarantula.HasStrongVenom;
+
             await _context.SaveChangesAsync();
             return NoContent();
         }
